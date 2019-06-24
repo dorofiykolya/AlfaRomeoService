@@ -2,13 +2,13 @@
   <div id="app">
     <div class="page-container">
       <md-tabs id="header-tabs" class="md-primary" md-alignment="left">
-        <md-tab id="tab-home" md-icon="home"></md-tab>
-        <md-tab id="tab-peaple" md-icon="people"></md-tab>
-        <md-tab id="tab-favorites" md-icon="drive_eta"></md-tab>
+        <md-tab id="tab-home" md-icon="home" @click="$router.push('/')"></md-tab>
+        <md-tab id="tab-peaple" md-icon="people" @click="$router.push('/clients')"></md-tab>
+        <md-tab id="tab-favorites" md-icon="drive_eta" @click="$router.push('/autos')"></md-tab>
       </md-tabs>
       <md-app>
         <md-app-content>
-          <order></order>
+          <router-view></router-view>
         </md-app-content>
       </md-app>
     </div>
@@ -16,11 +16,8 @@
 </template>
 
 <script>
-import order from "./components/Order.vue";
-
 export default {
-  name: "app",
-  components: [order]
+  name: "app"
 };
 </script>
 
