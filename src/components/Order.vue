@@ -272,7 +272,7 @@ export default {
     },
     deleteSelectedWorks() {
       this.selectedWork.forEach(element => {
-        var i = this.selectedWork.indexOf(element);
+        var i = this.works.indexOf(element);
         if (i != -1) {
           this.works.splice(i, 1);
         }
@@ -280,7 +280,7 @@ export default {
     },
     deleteSelectedMaterials() {
       this.selectedMaterials.forEach(element => {
-        var i = this.selectedMaterials.indexOf(element);
+        var i = this.materials.indexOf(element);
         if (i != -1) {
           this.materials.splice(i, 1);
         }
