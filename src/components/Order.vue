@@ -31,7 +31,7 @@
         <div class="md-layout md-gutter md-alignment-vertical-top header-title">
           <div class="md-layout-item-left">
             <h1 class="hide-space">_</h1>
-            <h1>РОБОТИ:</h1>
+            <h1>ВИКОНАНІ РОБОТИ:</h1>
           </div>
         </div>
         <div class="md-layout">
@@ -117,7 +117,7 @@
           <!-- <h1>РОБОТИ:</h1> -->
           <md-table v-model="works" md-card @md-selected="onSelectWorks">
             <md-table-toolbar>
-              <h1 class="md-title">РОБОТИ:</h1>
+              <h1 class="md-title">ВИКОНАНІ РОБОТИ:</h1>
             </md-table-toolbar>
 
             <md-table-toolbar slot="md-table-alternate-header" slot-scope="{ count }">
