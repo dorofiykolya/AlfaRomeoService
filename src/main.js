@@ -11,6 +11,7 @@ import 'vue-material/dist/theme/default.css'
 import Order from "./components/Order.vue"
 import Clients from "./components/Clients.vue"
 import Autos from "./components/Autos.vue"
+// import OrderPrint from "./components/OrderPrint.vue"
 
 Vue.use(VueMaterial);
 Vue.use(VueRouter);
@@ -18,6 +19,7 @@ Vue.use(VueRouter);
 Vue.component(Order.name, Order);
 Vue.component(Clients.name, Clients);
 Vue.component(Autos.name, Autos);
+// Vue.component(OrderPrint.name, OrderPrint);
 
 const routes = [
   {

@@ -11,7 +11,7 @@
             <div class="md-title">№{{orderNumber}}</div>
           </div>
           <div class="md-layout-item">
-            <md-datepicker v-model="selectedDate" md-immediately/>
+            <md-datepicker v-model="orderDate" md-immediately/>
           </div>
           <div class="md-layout-item">
             <md-button class="md-fab header-button-print" @click="printContent">
@@ -200,7 +200,7 @@ export default {
       materialUSD: 0,
       materialEURO: 0,
       orderNumber: "0001",
-      selectedDate: Date.now(),
+      orderDate: Date.now(),
       selectedWork: [],
       works: [],
       selectedMaterials: [],
@@ -208,19 +208,101 @@ export default {
     };
   },
   methods: {
+    readPrintFile(callback) {
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", "print.html", true);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4) {
+          callback(rawFile.responseText);
+        }
+      };
+      rawFile.send();
+    },
     printContent() {
-      var iframe = document.createElement("iframe");
-      document.body.appendChild(iframe);
-      var doc = iframe.contentDocument;
-      doc.open();
-      doc.write(
-        "<html><body><table border='1' cellpadding='7' cellspacing='0'>  <tr>    <td>...</td> <td>...</td><td>...</td> </tr><tr>    <td>...</td> <td>...</td><td>...</td> </tr></table></body></html>"
-      );
-      doc.close();
+      this.readPrintFile(txt => {
+        console.log(txt);
 
-      iframe.contentWindow.print();
-      document.body.removeChild(iframe);
-      // document.getElementById("printFrame").contentWindow.print();
+        var PrintKey = {
+          OrderNumber: "{{orderNumber}}",
+          OrderDate: "{{orderDate}}",
+          Works: "{{works}}",
+          Materials: " {{materials}}",
+          ClientName: "{{clientName}}"
+        };
+
+        var WorkTemplateKey = {
+          OrderNumber: "{{orderNumber}}",
+          OrderName: "{{orderName}}",
+          PriceUA: "{{priceUA}}",
+          PriceUSD: "{{priceUSD}}",
+          PriceEURO: "{{priceEURO}}"
+        };
+
+        var MaterialTemplateKey = {
+          OrderNumber: "{{orderNumber}}",
+          OrderName: "{{orderName}}",
+          OrderCount: "{{orderCount}}",
+          PriceUA: "{{priceUA}}",
+          PriceUSD: "{{priceUSD}}",
+          PriceEURO: "{{priceEURO}}"
+        };
+
+        var workTemplate =
+          '<tr><td class="table-align-right">{{orderNumber}}</td><td class="table-align-left">{{orderName}}</td><td class="table-align-right">{{priceUA}}</td><td class="table-align-right">{{priceUSD}}</td><td class="table-align-right">{{priceEURO}}</td></tr>';
+
+        var materialTemplate =
+          '<tr><td class="table-align-right">{{orderNumber}}</td><td class="table-align-left">{{orderName}}</td><td class="table-align-right">{{orderCount}}</td><td class="table-align-right">{{priceUA}}</td><td class="table-align-right">{{priceUSD}}</td><td class="table-align-right">{{priceEURO}}</td></tr>';
+        var html = "";
+        html = txt;
+        html = html.replace(
+          PrintKey.OrderDate,
+          new Date(this.orderDate).toDateString()
+        );
+        html = html.replace(PrintKey.OrderNumber, this.orderNumber);
+        html = html.replace(PrintKey.ClientName, this.client);
+
+        var worksResult = [];
+        var workIndex = 1;
+        this.works.forEach(e => {
+          var work = workTemplate;
+          work = work.replace(WorkTemplateKey.OrderNumber, workIndex);
+          work = work.replace(WorkTemplateKey.OrderName, e.name);
+          work = work.replace(WorkTemplateKey.PriceUA, e.ua);
+          work = work.replace(WorkTemplateKey.PriceUSD, e.usd);
+          work = work.replace(WorkTemplateKey.PriceEURO, e.euro);
+          worksResult.push(work);
+          workIndex++;
+        });
+        html = html.replace(PrintKey.Works, worksResult.join(""));
+
+        var materialsResult = [];
+        var materialIndex = 1;
+        this.materials.forEach(e => {
+          var material = materialTemplate;
+          material = material.replace(
+            MaterialTemplateKey.OrderNumber,
+            materialIndex
+          );
+          material = material.replace(MaterialTemplateKey.OrderName, e.name);
+          material = material.replace(MaterialTemplateKey.OrderCount, e.count);
+          material = material.replace(MaterialTemplateKey.PriceUA, e.ua);
+          material = material.replace(MaterialTemplateKey.PriceUSD, e.usd);
+          material = material.replace(MaterialTemplateKey.PriceEURO, e.euro);
+          materialsResult.push(material);
+          materialIndex++;
+        });
+        html = html.replace(PrintKey.Materials, materialsResult.join(""));
+
+        var iframe = document.createElement("iframe");
+        document.body.appendChild(iframe);
+        var doc = iframe.contentDocument;
+        doc.open();
+        doc.write(html);
+        doc.close();
+
+        iframe.contentWindow.print();
+        document.body.removeChild(iframe);
+      });
     },
     addWork() {
       this.works.push({
